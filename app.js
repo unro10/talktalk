@@ -4,7 +4,9 @@ auth,
 db,
 storage
 
-} from "./firebase.js";
+}
+
+from "./firebase.js";
 
 import {
 
@@ -40,9 +42,18 @@ getDownloadURL
 
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
 
+/* =========================
+   변수
+========================= */
+
 let currentUser = null;
 
-/* 사이드바 */
+const postsDiv =
+document.getElementById("posts");
+
+/* =========================
+   사이드바
+========================= */
 
 window.toggleSidebar = function(){
 
@@ -55,11 +66,15 @@ document
 .classList.toggle("active");
 };
 
-/* 회원가입 */
+/* =========================
+   회원가입
+========================= */
 
 document
 .getElementById("signupBtn")
 .onclick = async ()=>{
+
+try{
 
 const email =
 document.getElementById("email").value;
@@ -72,7 +87,7 @@ document.getElementById("nicknameInput").value;
 
 if(!email || !password || !nickname){
 
-alert("전부 입력");
+alert("전부 입력해주세요");
 return;
 }
 
@@ -88,13 +103,22 @@ nickname
 );
 
 alert("회원가입 성공");
+
+}catch(err){
+
+alert(err.message);
+}
 };
 
-/* 로그인 */
+/* =========================
+   로그인
+========================= */
 
 document
 .getElementById("loginBtn")
 .onclick = async ()=>{
+
+try{
 
 const email =
 document.getElementById("email").value;
@@ -109,9 +133,16 @@ password
 );
 
 alert("로그인 성공");
+
+}catch(err){
+
+alert(err.message);
+}
 };
 
-/* 로그아웃 */
+/* =========================
+   로그아웃
+========================= */
 
 document
 .getElementById("logoutBtn")
@@ -119,32 +150,48 @@ document
 
 await signOut(auth);
 
-alert("로그아웃");
+alert("로그아웃 완료");
 };
 
-/* 로그인 상태 */
+/* =========================
+   로그인 상태
+========================= */
 
 onAuthStateChanged(auth, (user)=>{
 
 currentUser = user;
 
-if(user){
-
+const profileName =
 document.getElementById(
 "profileName"
-).innerText =
+);
+
+const profileEmail =
+document.getElementById(
+"profileEmail"
+);
+
+const profileStatus =
+document.getElementById(
+"profileStatus"
+);
+
+const profileImage =
+document.getElementById(
+"profileImage"
+);
+
+if(user){
+
+profileName.innerText =
 localStorage.getItem(
 "nickname"
 ) || "사용자";
 
-document.getElementById(
-"profileEmail"
-).innerText =
+profileEmail.innerText =
 user.email;
 
-document.getElementById(
-"profileStatus"
-).innerText =
+profileStatus.innerText =
 localStorage.getItem(
 "status"
 ) || "상태메세지 없음";
@@ -156,25 +203,34 @@ localStorage.getItem(
 
 if(img){
 
-document.getElementById(
-"profileImage"
-).src = img;
+profileImage.src = img;
 }
 
 }else{
 
-document.getElementById(
-"profileName"
-).innerText =
+profileName.innerText =
 "로그인 안됨";
+
+profileEmail.innerText =
+"";
+
+profileStatus.innerText =
+"";
+
+profileImage.src =
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";
 }
 });
 
-/* 프로필 저장 */
+/* =========================
+   프로필 저장
+========================= */
 
 document
 .getElementById("saveProfileBtn")
 .onclick = async ()=>{
+
+try{
 
 if(!currentUser){
 
@@ -197,6 +253,11 @@ document.getElementById(
 "profileUpload"
 ).files[0];
 
+let imageUrl =
+localStorage.getItem(
+"profileImage"
+) || "";
+
 if(file){
 
 const storageRef =
@@ -210,34 +271,44 @@ storageRef,
 file
 );
 
-const url =
+imageUrl =
 await getDownloadURL(
 storageRef
 );
 
 localStorage.setItem(
 "profileImage",
-url
+imageUrl
 );
-
-document.getElementById(
-"profileImage"
-).src = url;
 }
 
 document.getElementById(
 "profileStatus"
-).innerText =
-status;
+).innerText = status;
+
+document.getElementById(
+"profileImage"
+).src =
+imageUrl ||
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 alert("프로필 저장 완료");
+
+}catch(err){
+
+alert(err.message);
+}
 };
 
-/* 게시글 */
+/* =========================
+   게시글 작성
+========================= */
 
 document
 .getElementById("uploadBtn")
 .onclick = async ()=>{
+
+try{
 
 if(!currentUser){
 
@@ -250,7 +321,11 @@ document.getElementById(
 "content"
 ).value.trim();
 
-if(!content) return;
+if(!content){
+
+alert("내용 입력");
+return;
+}
 
 await addDoc(
 
@@ -258,20 +333,23 @@ collection(db, "posts"),
 
 {
 
+uid:
+currentUser.uid,
+
 nickname:
 localStorage.getItem(
 "nickname"
-),
+) || "사용자",
 
 profileImage:
 localStorage.getItem(
 "profileImage"
-),
+) || "",
 
 status:
 localStorage.getItem(
 "status"
-),
+) || "",
 
 content,
 
@@ -283,12 +361,16 @@ serverTimestamp()
 document.getElementById(
 "content"
 ).value = "";
+
+}catch(err){
+
+alert(err.message);
+}
 };
 
-/* 게시글 불러오기 */
-
-const postsDiv =
-document.getElementById("posts");
+/* =========================
+   게시글 불러오기
+========================= */
 
 const q = query(
 
@@ -317,8 +399,6 @@ post.innerHTML = `
 
 <div class="post-header">
 
-<div class="user-row">
-
 <div class="comment-avatar-wrap">
 
 <img
@@ -336,15 +416,11 @@ data.profileImage ||
 <div>
 
 <div class="nickname">
-${escapeHTML(data.nickname)}
+${escapeHTML(data.nickname || "사용자")}
 </div>
 
 <div class="date">
-${formatDate(
-data.createdAt
-)}
-</div>
-
+${formatDate(data.createdAt)}
 </div>
 
 </div>
@@ -352,13 +428,17 @@ data.createdAt
 </div>
 
 <div class="content">
-${escapeHTML(data.content)}
+${escapeHTML(data.content || "")}
 </div>
 `;
 
 postsDiv.appendChild(post);
 });
 });
+
+/* =========================
+   날짜
+========================= */
 
 function formatDate(timestamp){
 
@@ -369,6 +449,10 @@ timestamp.toDate();
 
 return date.toLocaleString();
 }
+
+/* =========================
+   XSS 방지
+========================= */
 
 function escapeHTML(str){
 
