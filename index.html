@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TalkTalk</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#f5f5f5;
+    font-family:'Pretendard', sans-serif;
+    color:#111;
+}
+
+.container{
+    width:100%;
+    max-width:550px;
+    margin:auto;
+    padding:20px;
+}
+
+.title{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.title h1{
+    font-size:30px;
+}
+
+.title p{
+    color:#666;
+    margin-top:6px;
+    font-size:14px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:18px;
+    margin-bottom:18px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+.input{
+    width:100%;
+    border:none;
+    outline:none;
+    background:#f1f1f1;
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:12px;
+    font-size:15px;
+}
+
+textarea{
+    resize:none;
+    min-height:120px;
+}
+
+button{
+    border:none;
+    background:black;
+    color:white;
+    padding:12px 16px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    width:100%;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+.post-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:10px;
+}
+
+.nickname{
+    font-weight:700;
+    margin-bottom:4px;
+}
+
+.date{
+    font-size:12px;
+    color:#888;
+}
+
+.content{
+    line-height:1.6;
+    word-break:break-word;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+}
+
+.actions button{
+    width:auto;
+    padding:8px 12px;
+    font-size:13px;
+}
+
+.comment-box{
+    margin-top:16px;
+}
+
+.comment{
+    background:#f7f7f7;
+    border-radius:12px;
+    padding:12px;
+    margin-top:12px;
+}
+
+.comment-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+}
+
+.small{
+    font-size:13px;
+}
+
+.menu-wrap{
+    position:relative;
+}
+
+.menu-btn-small{
+    background:none;
+    color:#666;
+    border:none;
+    width:auto;
+    font-size:20px;
+    padding:0 8px;
+}
+
+.comment-menu{
+    position:absolute;
+    top:30px;
+    right:0;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    display:none;
+    min-width:100px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.12);
+}
+
+.comment-menu.active{
+    display:block;
+}
+
+.comment-menu button{
+    width:100%;
+    background:white;
+    color:black;
+    border:none;
+    border-radius:0;
+    text-align:left;
+    padding:10px 14px;
+}
+
+.comment-menu button:hover{
+    background:#f3f3f3;
+}
+
+.reply-toggle{
+    margin-top:10px;
+    font-size:13px;
+    color:#666;
+    cursor:pointer;
+}
+
+.reply{
+    margin-left:18px;
+    margin-top:10px;
+    background:#ececec;
+    border-radius:10px;
+    padding:10px;
+}
+
+.replies{
+    margin-top:10px;
+}
+
+.menu-btn{
+    position:fixed;
+    top:18px;
+    left:18px;
+    width:46px;
+    height:46px;
+    background:white;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    z-index:1001;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:-320px;
+    width:300px;
+    max-width:85%;
+    height:100vh;
+    background:white;
+    padding:24px;
+    transition:0.3s;
+    z-index:1002;
+    overflow-y:auto;
+    box-shadow:4px 0 20px rgba(0,0,0,0.1);
+}
+
+.sidebar.active{
+    left:0;
+}
+
+.overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.35);
+    opacity:0;
+    pointer-events:none;
+    transition:0.3s;
+    z-index:1000;
+}
+
+.overlay.active{
+    opacity:1;
+    pointer-events:auto;
+}
+
+.user-info{
+    text-align:center;
+    margin-bottom:15px;
+    color:#555;
+    font-size:14px;
+}
+
+@media(max-width:480px){
+
+    .container{
+        padding:14px;
+    }
+
+    .title h1{
+        font-size:24px;
+    }
+
+    .card{
+        border-radius:16px;
+        padding:15px;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="menu-btn" onclick="toggleSidebar()">
+☰
+</div>
+
+<div
+class="overlay"
+id="overlay"
+onclick="toggleSidebar()"
+></div>
+
+<div class="sidebar" id="sidebar">
+
+    <h2>계정</h2>
+
+    <input
+        type="email"
+        id="email"
+        class="input"
+        placeholder="이메일"
+    >
+
+    <input
+        type="password"
+        id="password"
+        class="input"
+        placeholder="비밀번호"
+    >
+
+    <input
+        type="text"
+        id="nicknameInput"
+        class="input"
+        placeholder="닉네임"
+    >
+
+    <button onclick="signup()">
+        회원가입
+    </button>
+
+    <br><br>
+
+    <button onclick="login()">
+        로그인
+    </button>
+
+    <br><br>
+
+    <button onclick="logout()">
+        로그아웃
+    </button>
+
+</div>
+
+<div class="container">
+
+    <div class="title">
+        <h1>TalkTalk</h1>
+        <p>실시간 온라인 커뮤니티</p>
+    </div>
+
+    <div
+        class="user-info"
+        id="userInfo"
+    >
+        로그인 안됨
+    </div>
+
+    <div class="card">
+
+        <textarea
+            id="content"
+            class="input"
+            placeholder="내용 입력"
+        ></textarea>
+
+        <button onclick="uploadPost()">
+            게시하기
+        </button>
+
+    </div>
+
+    <div id="posts"></div>
+
+</div>
+
+<script type="module">
+
+import {
+initializeApp
+}
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+getAnalytics
+}
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
+
+import {
+
+getFirestore,
+collection,
+addDoc,
+query,
+orderBy,
+onSnapshot,
+serverTimestamp,
+doc,
+updateDoc,
+deleteDoc
+
+}
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+import {
+
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+
+}
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+/* Firebase 설정 */
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyCwvEU45zXUnJTcISF2CHBb1H5kPvA1UnY",
+
+authDomain:
+"talktalk-c3cbe.firebaseapp.com",
+
+databaseURL:
+"https://talktalk-c3cbe-default-rtdb.firebaseio.com",
+
+projectId:
+"talktalk-c3cbe",
+
+storageBucket:
+"talktalk-c3cbe.firebasestorage.app",
+
+messagingSenderId:
+"476607267300",
+
+appId:
+"1:476607267300:web:1d0ea398b686227c3e87f1",
+
+measurementId:
+"G-HYD9W5XNX0"
+};
+
+const app =
+initializeApp(firebaseConfig);
+
+const analytics =
+getAnalytics(app);
+
+const db =
+getFirestore(app);
+
+const auth =
+getAuth(app);
+
+const postsDiv =
+document.getElementById("posts");
+
+let currentUser = null;
+
+/* 로그인 상태 */
+
+onAuthStateChanged(auth, (user)=>{
+
+currentUser = user;
+
+const userInfo =
+document.getElementById("userInfo");
+
+if(user){
+
+userInfo.innerText =
+`${localStorage.getItem("nickname")} 님 로그인`;
+
+}else{
+
+userInfo.innerText =
+"로그인 안됨";
+}
+});
+
+/* 회원가입 */
+
+window.signup = async function(){
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+const nickname =
+document.getElementById("nicknameInput").value;
+
+if(!email || !password || !nickname){
+
+alert("전부 입력해주세요");
+return;
+}
+
+await createUserWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+localStorage.setItem(
+"nickname",
+nickname
+);
+
+alert("회원가입 성공");
+};
+
+/* 로그인 */
+
+window.login = async function(){
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+alert("로그인 성공");
+};
+
+/* 로그아웃 */
+
+window.logout = async function(){
+
+await signOut(auth);
+
+alert("로그아웃 완료");
+};
+
+/* 글 작성 */
+
+window.uploadPost = async function(){
+
+if(!currentUser){
+
+alert("로그인 필요");
+return;
+}
+
+const content =
+document.getElementById("content")
+.value
+.trim();
+
+if(!content){
+
+alert("내용 입력");
+return;
+}
+
+await addDoc(
+
+collection(db, "posts"),
+
+{
+
+nickname:
+localStorage.getItem("nickname"),
+
+uid:
+currentUser.uid,
+
+email:
+currentUser.email,
+
+content,
+
+createdAt:
+serverTimestamp()
+}
+);
+
+document.getElementById(
+"content"
+).value = "";
+};
+
+/* 게시글 */
+
+const q = query(
+
+collection(db, "posts"),
+
+orderBy(
+"createdAt",
+"desc"
+)
+);
+
+onSnapshot(q, (snapshot)=>{
+
+postsDiv.innerHTML = "";
+
+snapshot.forEach((postDoc)=>{
+
+const data =
+postDoc.data();
+
+const isMine =
+
+currentUser && (
+
+currentUser.uid === data.uid ||
+
+currentUser.email === data.email
+
+);
+
+const post =
+document.createElement("div");
+
+post.className = "card";
+
+let dateText = "";
+
+if(data.createdAt){
+
+const date =
+data.createdAt.toDate();
+
+dateText =
+`${date.getFullYear()}.` +
+`${String(date.getMonth()+1).padStart(2,"0")}.` +
+`${String(date.getDate()).padStart(2,"0")} ` +
+`${String(date.getHours()).padStart(2,"0")}:` +
+`${String(date.getMinutes()).padStart(2,"0")}`;
+}
+
+post.innerHTML = `
+
+<div class="post-header">
+
+<div>
+
+<div class="nickname">
+${escapeHTML(data.nickname)}
+</div>
+
+<div class="date">
+${dateText}
+</div>
+
+</div>
+
+${
+isMine
+?
+`
+<div class="actions">
+
+<button onclick="
+editPost(
+'${postDoc.id}',
+\`${escapeHTML(data.content)}\`
+)
+">
+수정
+</button>
+
+<button onclick="
+deletePost('${postDoc.id}')
+">
+삭제
+</button>
+
+</div>
+`
+:
+""
+}
+
+</div>
+
+<div class="content">
+${escapeHTML(data.content)
+.replace(/\n/g,"<br>")}
+</div>
+
+<div class="comment-box">
+
+<input
+type="text"
+class="input"
+placeholder="댓글 입력"
+id="comment-${postDoc.id}"
+>
+
+<button onclick="
+addComment('${postDoc.id}')
+">
+댓글 작성
+</button>
+
+</div>
+
+<div
+id="comments-${postDoc.id}"
+></div>
+`;
+
+postsDiv.appendChild(post);
+
+loadComments(postDoc.id);
+});
+});
+
+/* 게시글 수정 */
+
+window.editPost = async function(
+postId,
+oldContent
+){
+
+const newContent =
+prompt(
+"수정할 내용을 입력",
+oldContent
+);
+
+if(
+newContent === null ||
+newContent.trim() === ""
+) return;
+
+await updateDoc(
+doc(db, "posts", postId),
+{
+content:newContent
+}
+);
+
+alert("수정 완료");
+};
+
+/* 게시글 삭제 */
+
+window.deletePost = async function(
+postId
+){
+
+const ok =
+confirm("삭제하시겠습니까?");
+
+if(!ok) return;
+
+await deleteDoc(
+doc(db, "posts", postId)
+);
+
+alert("삭제 완료");
+};
+
+/* 댓글 작성 */
+
+window.addComment = async function(
+postId
+){
+
+if(!currentUser){
+
+alert("로그인 필요");
+return;
+}
+
+const input =
+document.getElementById(
+`comment-${postId}`
+);
+
+const text =
+input.value.trim();
+
+if(!text) return;
+
+await addDoc(
+
+collection(
+db,
+"posts",
+postId,
+"comments"
+),
+
+{
+
+nickname:
+localStorage.getItem("nickname"),
+
+uid:
+currentUser.uid,
+
+email:
+currentUser.email,
+
+content:text,
+
+createdAt:
+serverTimestamp()
+}
+);
+
+input.value = "";
+};
+
+/* 댓글 */
+
+function loadComments(postId){
+
+const commentsDiv =
+document.getElementById(
+`comments-${postId}`
+);
+
+const q = query(
+
+collection(
+db,
+"posts",
+postId,
+"comments"
+),
+
+orderBy(
+"createdAt",
+"asc"
+)
+);
+
+onSnapshot(q, (snapshot)=>{
+
+commentsDiv.innerHTML = "";
+
+snapshot.forEach((commentDoc)=>{
+
+const data =
+commentDoc.data();
+
+const isMine =
+
+currentUser && (
+
+currentUser.uid === data.uid ||
+
+currentUser.email === data.email
+
+);
+
+let commentDate = "";
+
+if(data.createdAt){
+
+const date =
+data.createdAt.toDate();
+
+commentDate =
+`${String(
+date.getHours()
+).padStart(2,"0")}:` +
+`${String(
+date.getMinutes()
+).padStart(2,"0")}`;
+}
+
+const div =
+document.createElement("div");
+
+div.className =
+"comment";
+
+div.innerHTML = `
+
+<div class="comment-header">
+
+<div>
+
+<div class="nickname small">
+${escapeHTML(data.nickname)}
+</div>
+
+<div class="date">
+${commentDate}
+</div>
+
+</div>
+
+${
+isMine
+?
+`
+<div class="menu-wrap">
+
+<button
+class="menu-btn-small"
+onclick="
+toggleMenu(
+'${commentDoc.id}'
+)
+"
+>
+⋮
+</button>
+
+<div
+class="comment-menu"
+id="menu-${commentDoc.id}"
+>
+
+<button onclick="
+editComment(
+'${postId}',
+'${commentDoc.id}',
+\`${escapeHTML(
+data.content
+)}\`
+)
+">
+수정
+</button>
+
+<button onclick="
+deleteComment(
+'${postId}',
+'${commentDoc.id}'
+)
+">
+삭제
+</button>
+
+</div>
+
+</div>
+`
+:
+""
+}
+
+</div>
+
+<div class="content small">
+${escapeHTML(data.content)}
+</div>
+
+<div
+class="reply-toggle"
+onclick="
+toggleReplies(
+'${commentDoc.id}'
+)
+"
+>
+답글 보기
+</div>
+
+<div
+class="replies"
+id="replies-${commentDoc.id}"
+style="display:none;"
+></div>
+
+<div class="reply-box">
+
+<input
+type="text"
+class="input"
+placeholder="답글 입력"
+id="reply-input-${commentDoc.id}"
+>
+
+<button onclick="
+addReply(
+'${postId}',
+'${commentDoc.id}'
+)
+">
+답글 작성
+</button>
+
+</div>
+`;
+
+commentsDiv.appendChild(div);
+
+loadReplies(
+postId,
+commentDoc.id
+);
+});
+});
+}
+
+/* 답글 */
+
+window.addReply = async function(
+
+postId,
+commentId
+
+){
+
+if(!currentUser){
+
+alert("로그인 필요");
+return;
+}
+
+const input =
+document.getElementById(
+`reply-input-${commentId}`
+);
+
+const text =
+input.value.trim();
+
+if(!text) return;
+
+await addDoc(
+
+collection(
+db,
+"posts",
+postId,
+"comments",
+commentId,
+"replies"
+),
+
+{
+
+nickname:
+localStorage.getItem("nickname"),
+
+uid:
+currentUser.uid,
+
+email:
+currentUser.email,
+
+content:text,
+
+createdAt:
+serverTimestamp()
+}
+);
+
+input.value = "";
+};
+
+function loadReplies(
+
+postId,
+commentId
+
+){
+
+const repliesDiv =
+document.getElementById(
+`replies-${commentId}`
+);
+
+const q = query(
+
+collection(
+db,
+"posts",
+postId,
+"comments",
+commentId,
+"replies"
+),
+
+orderBy(
+"createdAt",
+"asc"
+)
+);
+
+onSnapshot(q, (snapshot)=>{
+
+repliesDiv.innerHTML = "";
+
+snapshot.forEach((replyDoc)=>{
+
+const data =
+replyDoc.data();
+
+const div =
+document.createElement("div");
+
+div.className =
+"reply";
+
+div.innerHTML = `
+
+<div class="nickname small">
+${escapeHTML(data.nickname)}
+</div>
+
+<div class="content small">
+${escapeHTML(data.content)}
+</div>
+`;
+
+repliesDiv.appendChild(div);
+});
+});
+}
+
+/* 댓글 메뉴 */
+
+window.toggleMenu = function(id){
+
+const menu =
+document.getElementById(
+`menu-${id}`
+);
+
+menu.classList.toggle(
+"active"
+);
+};
+
+/* 댓글 수정 */
+
+window.editComment = async function(
+
+postId,
+commentId,
+oldContent
+
+){
+
+const newContent =
+prompt(
+"댓글 수정",
+oldContent
+);
+
+if(
+newContent === null ||
+newContent.trim() === ""
+) return;
+
+await updateDoc(
+
+doc(
+db,
+"posts",
+postId,
+"comments",
+commentId
+),
+
+{
+content:newContent
+}
+);
+
+alert("수정 완료");
+};
+
+/* 댓글 삭제 */
+
+window.deleteComment = async function(
+
+postId,
+commentId
+
+){
+
+const ok =
+confirm(
+"댓글 삭제?"
+);
+
+if(!ok) return;
+
+await deleteDoc(
+
+doc(
+db,
+"posts",
+postId,
+"comments",
+commentId
+)
+);
+
+alert("삭제 완료");
+};
+
+/* 답글 접기 */
+
+window.toggleReplies = function(commentId){
+
+const replies =
+document.getElementById(
+`replies-${commentId}`
+);
+
+const toggle =
+replies.previousElementSibling;
+
+if(
+replies.style.display === "none"
+){
+
+replies.style.display =
+"block";
+
+toggle.innerText =
+"답글 접기";
+
+}else{
+
+replies.style.display =
+"none";
+
+toggle.innerText =
+"답글 보기";
+}
+};
+
+/* 사이드바 */
+
+window.toggleSidebar =
+function(){
+
+const sidebar =
+document.getElementById(
+"sidebar"
+);
+
+const overlay =
+document.getElementById(
+"overlay"
+);
+
+sidebar.classList.toggle(
+"active"
+);
+
+overlay.classList.toggle(
+"active"
+);
+};
+
+/* XSS */
+
+function escapeHTML(str){
+
+return str
+.replace(/&/g, "&amp;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;")
+.replace(/"/g, "&quot;")
+.replace(/'/g, "&#039;");
+}
+
+</script>
+
+</body>
+</html>
