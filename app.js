@@ -26,7 +26,10 @@ addDoc,
 query,
 orderBy,
 onSnapshot,
-serverTimestamp
+serverTimestamp,
+doc,
+setDoc,
+getDoc
 
 }
 
@@ -42,18 +45,14 @@ getDownloadURL
 
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
 
-/* =========================
-   변수
-========================= */
+/* 변수 */
 
 let currentUser = null;
 
 const postsDiv =
 document.getElementById("posts");
 
-/* =========================
-   사이드바
-========================= */
+/* 사이드바 */
 
 window.toggleSidebar = function(){
 
@@ -66,9 +65,7 @@ document
 .classList.toggle("active");
 };
 
-/* =========================
-   회원가입
-========================= */
+/* 회원가입 */
 
 document
 .getElementById("signupBtn")
@@ -91,15 +88,32 @@ alert("전부 입력해주세요");
 return;
 }
 
+const userCredential =
+
 await createUserWithEmailAndPassword(
 auth,
 email,
 password
 );
 
-localStorage.setItem(
-"nickname",
-nickname
+const user =
+userCredential.user;
+
+/* Firestore 저장 */
+
+await setDoc(
+
+doc(db, "users", user.uid),
+
+{
+
+nickname,
+email,
+
+status:"상태메세지 없음",
+
+profileImage:""
+}
 );
 
 alert("회원가입 성공");
@@ -110,9 +124,7 @@ alert(err.message);
 }
 };
 
-/* =========================
-   로그인
-========================= */
+/* 로그인 */
 
 document
 .getElementById("loginBtn")
@@ -140,9 +152,7 @@ alert(err.message);
 }
 };
 
-/* =========================
-   로그아웃
-========================= */
+/* 로그아웃 */
 
 document
 .getElementById("logoutBtn")
@@ -153,11 +163,9 @@ await signOut(auth);
 alert("로그아웃 완료");
 };
 
-/* =========================
-   로그인 상태
-========================= */
+/* 로그인 상태 */
 
-onAuthStateChanged(auth, (user)=>{
+onAuthStateChanged(auth, async (user)=>{
 
 currentUser = user;
 
@@ -183,27 +191,31 @@ document.getElementById(
 
 if(user){
 
+const userRef =
+doc(db, "users", user.uid);
+
+const userSnap =
+await getDoc(userRef);
+
+if(userSnap.exists()){
+
+const userData =
+userSnap.data();
+
 profileName.innerText =
-localStorage.getItem(
-"nickname"
-) || "사용자";
+userData.nickname;
 
 profileEmail.innerText =
-user.email;
+userData.email;
 
 profileStatus.innerText =
-localStorage.getItem(
-"status"
-) || "상태메세지 없음";
+userData.status;
 
-const img =
-localStorage.getItem(
-"profileImage"
-);
+profileImage.src =
 
-if(img){
+userData.profileImage ||
 
-profileImage.src = img;
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";
 }
 
 }else{
@@ -222,9 +234,7 @@ profileImage.src =
 }
 });
 
-/* =========================
-   프로필 저장
-========================= */
+/* 프로필 저장 */
 
 document
 .getElementById("saveProfileBtn")
@@ -243,20 +253,12 @@ document.getElementById(
 "statusInput"
 ).value;
 
-localStorage.setItem(
-"status",
-status
-);
-
 const file =
 document.getElementById(
 "profileUpload"
 ).files[0];
 
-let imageUrl =
-localStorage.getItem(
-"profileImage"
-) || "";
+let imageUrl = "";
 
 if(file){
 
@@ -276,21 +278,59 @@ await getDownloadURL(
 storageRef
 );
 
-localStorage.setItem(
-"profileImage",
-imageUrl
+}else{
+
+const userSnap =
+await getDoc(
+doc(
+db,
+"users",
+currentUser.uid
+)
 );
+
+imageUrl =
+userSnap.data().profileImage || "";
 }
 
-document.getElementById(
-"profileStatus"
-).innerText = status;
+/* 기존 닉네임 유지 */
 
-document.getElementById(
-"profileImage"
-).src =
-imageUrl ||
-"https://cdn-icons-png.flaticon.com/512/149/149071.png";
+const userSnap =
+await getDoc(
+doc(
+db,
+"users",
+currentUser.uid
+)
+);
+
+const oldData =
+userSnap.data();
+
+await setDoc(
+
+doc(
+db,
+"users",
+currentUser.uid
+),
+
+{
+
+nickname:
+oldData.nickname,
+
+email:
+currentUser.email,
+
+status:
+status || "상태메세지 없음",
+
+profileImage:imageUrl
+
+}
+
+);
 
 alert("프로필 저장 완료");
 
@@ -300,9 +340,7 @@ alert(err.message);
 }
 };
 
-/* =========================
-   게시글 작성
-========================= */
+/* 게시글 작성 */
 
 document
 .getElementById("uploadBtn")
@@ -327,6 +365,21 @@ alert("내용 입력");
 return;
 }
 
+/* 유저 정보 */
+
+const userSnap =
+await getDoc(
+
+doc(
+db,
+"users",
+currentUser.uid
+)
+);
+
+const userData =
+userSnap.data();
+
 await addDoc(
 
 collection(db, "posts"),
@@ -337,19 +390,13 @@ uid:
 currentUser.uid,
 
 nickname:
-localStorage.getItem(
-"nickname"
-) || "사용자",
+userData.nickname,
 
 profileImage:
-localStorage.getItem(
-"profileImage"
-) || "",
+userData.profileImage,
 
 status:
-localStorage.getItem(
-"status"
-) || "",
+userData.status,
 
 content,
 
@@ -368,9 +415,7 @@ alert(err.message);
 }
 };
 
-/* =========================
-   게시글 불러오기
-========================= */
+/* 게시글 불러오기 */
 
 const q = query(
 
@@ -386,9 +431,10 @@ onSnapshot(q, (snapshot)=>{
 
 postsDiv.innerHTML = "";
 
-snapshot.forEach((doc)=>{
+snapshot.forEach((postDoc)=>{
 
-const data = doc.data();
+const data =
+postDoc.data();
 
 const post =
 document.createElement("div");
@@ -416,11 +462,15 @@ data.profileImage ||
 <div>
 
 <div class="nickname">
-${escapeHTML(data.nickname || "사용자")}
+${escapeHTML(
+data.nickname || "사용자"
+)}
 </div>
 
 <div class="date">
-${formatDate(data.createdAt)}
+${formatDate(
+data.createdAt
+)}
 </div>
 
 </div>
@@ -428,7 +478,9 @@ ${formatDate(data.createdAt)}
 </div>
 
 <div class="content">
-${escapeHTML(data.content || "")}
+${escapeHTML(
+data.content || ""
+)}
 </div>
 `;
 
@@ -436,9 +488,7 @@ postsDiv.appendChild(post);
 });
 });
 
-/* =========================
-   날짜
-========================= */
+/* 날짜 */
 
 function formatDate(timestamp){
 
@@ -450,9 +500,7 @@ timestamp.toDate();
 return date.toLocaleString();
 }
 
-/* =========================
-   XSS 방지
-========================= */
+/* XSS 방지 */
 
 function escapeHTML(str){
 
