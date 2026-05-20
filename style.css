@@ -22,6 +22,15 @@ body{
     margin-bottom:24px;
 }
 
+.title h1{
+    font-size:30px;
+}
+
+.title p{
+    margin-top:6px;
+    color:#666;
+}
+
 .card,
 .post{
     background:white;
@@ -56,11 +65,14 @@ button{
     width:100%;
     margin-bottom:10px;
     cursor:pointer;
+    font-weight:600;
 }
 
 button:hover{
     opacity:0.92;
 }
+
+/* 메뉴 */
 
 .menu-btn{
     position:fixed;
@@ -76,24 +88,7 @@ button:hover{
     font-size:24px;
     cursor:pointer;
     z-index:1001;
-}
-
-.sidebar{
-    position:fixed;
-    top:0;
-    left:-320px;
-    width:300px;
-    max-width:85%;
-    height:100vh;
-    background:white;
-    padding:24px;
-    transition:0.3s;
-    z-index:1002;
-    overflow-y:auto;
-}
-
-.sidebar.active{
-    left:0;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
 
 .overlay{
@@ -110,10 +105,30 @@ button:hover{
     pointer-events:auto;
 }
 
+.sidebar{
+    position:fixed;
+    top:0;
+    left:-320px;
+    width:300px;
+    max-width:85%;
+    height:100vh;
+    background:white;
+    padding:24px;
+    overflow-y:auto;
+    transition:0.3s;
+    z-index:1002;
+}
+
+.sidebar.active{
+    left:0;
+}
+
+/* 프로필 */
+
 .profile-card{
     display:flex;
-    gap:14px;
     align-items:center;
+    gap:14px;
     margin-bottom:18px;
 }
 
@@ -152,6 +167,8 @@ button:hover{
     margin-top:4px;
 }
 
+/* 게시글 */
+
 .post-header{
     display:flex;
     align-items:center;
@@ -188,7 +205,7 @@ button:hover{
 .date{
     font-size:12px;
     color:#888;
-    margin-top:2px;
+    margin-top:3px;
 }
 
 .content{
@@ -196,4 +213,17 @@ button:hover{
     line-height:1.6;
     white-space:pre-wrap;
     word-break:break-word;
+}
+
+@media(max-width:480px){
+
+.container{
+    padding:14px;
+}
+
+.card,
+.post{
+    border-radius:16px;
+}
+
 }
