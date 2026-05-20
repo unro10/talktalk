@@ -1,368 +1,18 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>TalkTalk</title>
 
+<link rel="stylesheet" href="style.css">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
+
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    background:#f5f5f5;
-    font-family:'Pretendard', sans-serif;
-    color:#111;
-}
-
-.container{
-    width:100%;
-    max-width:550px;
-    margin:auto;
-    padding:20px;
-}
-
-.title{
-    text-align:center;
-    margin-bottom:24px;
-}
-
-.title h1{
-    font-size:30px;
-}
-
-.title p{
-    margin-top:6px;
-    color:#666;
-    font-size:14px;
-}
-
-.card{
-    background:white;
-    border-radius:20px;
-    padding:18px;
-    margin-bottom:18px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.05);
-}
-
-.input{
-    width:100%;
-    border:none;
-    outline:none;
-    background:#f1f1f1;
-    border-radius:12px;
-    padding:14px;
-    margin-bottom:12px;
-    font-size:15px;
-}
-
-textarea{
-    resize:none;
-    min-height:120px;
-}
-
-button{
-    border:none;
-    background:black;
-    color:white;
-    padding:12px 16px;
-    border-radius:12px;
-    cursor:pointer;
-    font-weight:600;
-    width:100%;
-}
-
-button:hover{
-    opacity:0.92;
-}
-
-.content{
-    line-height:1.6;
-    word-break:break-word;
-}
-
-.nickname{
-    font-weight:700;
-}
-
-.date{
-    color:#888;
-    font-size:12px;
-    margin-top:3px;
-}
-
-.post-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    margin-bottom:12px;
-}
-
-.actions{
-    display:flex;
-    gap:8px;
-}
-
-.actions button{
-    width:auto;
-    padding:8px 12px;
-    font-size:13px;
-}
-
-.comment{
-    margin-top:14px;
-    background:#f7f7f7;
-    padding:12px;
-    border-radius:12px;
-}
-
-.comment-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:8px;
-}
-
-.menu-wrap{
-    position:relative;
-}
-
-.menu-btn-small{
-    background:none;
-    border:none;
-    color:#666;
-    font-size:20px;
-    width:auto;
-    padding:0 8px;
-}
-
-.comment-menu{
-    position:absolute;
-    right:0;
-    top:30px;
-    background:white;
-    border-radius:12px;
-    overflow:hidden;
-    display:none;
-    min-width:100px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.12);
-    z-index:100;
-}
-
-.comment-menu.active{
-    display:block;
-}
-
-.comment-menu button{
-    background:white;
-    color:black;
-    border:none;
-    border-radius:0;
-    text-align:left;
-    width:100%;
-    padding:10px 14px;
-}
-
-.comment-menu button:hover{
-    background:#f3f3f3;
-}
-
-.reply-toggle{
-    margin-top:10px;
-    font-size:13px;
-    color:#666;
-    cursor:pointer;
-}
-
-.reply{
-    margin-left:18px;
-    margin-top:10px;
-    background:#ececec;
-    padding:10px;
-    border-radius:10px;
-}
-
-.replies{
-    margin-top:10px;
-}
-
-.small{
-    font-size:13px;
-}
-
-/* 사이드바 */
-
-.menu-btn{
-    position:fixed;
-    top:18px;
-    left:18px;
-    width:46px;
-    height:46px;
-    background:white;
-    border-radius:14px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:24px;
-    cursor:pointer;
-    z-index:1001;
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
-}
-
-.sidebar{
-    position:fixed;
-    top:0;
-    left:-320px;
-    width:300px;
-    max-width:85%;
-    height:100vh;
-    background:white;
-    padding:24px;
-    transition:0.3s;
-    z-index:1002;
-    overflow-y:auto;
-    box-shadow:4px 0 20px rgba(0,0,0,0.1);
-}
-
-.sidebar.active{
-    left:0;
-}
-
-.overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.35);
-    opacity:0;
-    pointer-events:none;
-    transition:0.3s;
-    z-index:1000;
-}
-
-.overlay.active{
-    opacity:1;
-    pointer-events:auto;
-}
-
-/* 프로필 */
-
-.profile-card{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.profile-avatar-wrap{
-    position:relative;
-    width:64px;
-    height:64px;
-    flex-shrink:0;
-}
-
-.profile-avatar-img{
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    object-fit:cover;
-    background:#ddd;
-}
-
-.online-dot{
-    position:absolute;
-    right:2px;
-    bottom:2px;
-    width:16px;
-    height:16px;
-    border-radius:50%;
-    background:#2cd84a;
-    border:3px solid white;
-}
-
-.profile-info{
-    display:flex;
-    flex-direction:column;
-}
-
-.profile-name{
-    font-size:18px;
-    font-weight:700;
-}
-
-.profile-email{
-    margin-top:4px;
-    font-size:13px;
-    color:#777;
-}
-
-.profile-status{
-    margin-top:6px;
-    font-size:13px;
-    color:#666;
-}
-
-/* 댓글 프로필 */
-
-.user-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.comment-avatar-wrap{
-    position:relative;
-    width:38px;
-    height:38px;
-    flex-shrink:0;
-}
-
-.comment-avatar{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    object-fit:cover;
-    background:#ddd;
-}
-
-.comment-online{
-    position:absolute;
-    right:0;
-    bottom:0;
-    width:12px;
-    height:12px;
-    border-radius:50%;
-    background:#2cd84a;
-    border:2px solid white;
-}
-
-.user-meta{
-    display:flex;
-    flex-direction:column;
-}
-
-@media(max-width:480px){
-
-    .container{
-        padding:14px;
-    }
-
-    .card{
-        border-radius:16px;
-        padding:15px;
-    }
-
-    .title h1{
-        font-size:24px;
-    }
-}
-
-</style>
 </head>
 <body>
 
@@ -376,14 +26,13 @@ id="overlay"
 onclick="toggleSidebar()"
 ></div>
 
+<!-- 사이드바 -->
+
 <div class="sidebar" id="sidebar">
 
     <h2>계정</h2>
 
-    <div
-        class="profile-card card"
-        id="profileCard"
-    >
+    <div class="profile-card">
 
         <div class="profile-avatar-wrap">
 
@@ -443,54 +92,57 @@ onclick="toggleSidebar()"
         placeholder="닉네임"
     >
 
-    <button onclick="signup()">
+    <button id="signupBtn">
         회원가입
     </button>
 
-    <br><br>
-
-    <button onclick="login()">
+    <button id="loginBtn">
         로그인
     </button>
 
-    <br><br>
-
-    <button onclick="logout()">
+    <button id="logoutBtn">
         로그아웃
     </button>
 
-    <hr style="margin:22px 0; border:none; border-top:1px solid #eee;">
+    <hr>
 
-    <h3 style="margin-bottom:12px;">
-        프로필 설정
-    </h3>
+    <h3>프로필 설정</h3>
 
     <input
         type="text"
         id="statusInput"
         class="input"
-        placeholder="상태메세지 입력"
+        placeholder="상태메세지"
     >
 
     <input
         type="file"
         id="profileUpload"
-        accept="image/*"
         class="input"
+        accept="image/*"
     >
 
-    <button onclick="saveProfile()">
+    <button id="saveProfileBtn">
         프로필 저장
     </button>
 
 </div>
 
+<!-- 메인 -->
+
 <div class="container">
 
     <div class="title">
+
         <h1>TalkTalk</h1>
-        <p>실시간 온라인 커뮤니티</p>
+
+        <p>
+            실시간 온라인 커뮤니티
+        </p>
+
     </div>
+
+    <!-- 글 작성 -->
 
     <div class="card">
 
@@ -500,364 +152,20 @@ onclick="toggleSidebar()"
             placeholder="내용 입력"
         ></textarea>
 
-        <button onclick="uploadPost()">
+        <button id="uploadBtn">
             게시하기
         </button>
 
     </div>
 
+    <!-- 게시글 -->
+
     <div id="posts"></div>
 
 </div>
 
-<script type="module">
-
-import {
-initializeApp
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-
-import {
-getAnalytics
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
-
-import {
-
-getFirestore,
-collection,
-addDoc,
-query,
-orderBy,
-onSnapshot,
-serverTimestamp,
-doc,
-updateDoc,
-deleteDoc
-
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
-
-import {
-
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-onAuthStateChanged,
-signOut
-
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-
-import {
-
-getStorage,
-ref,
-uploadBytes,
-getDownloadURL
-
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
-
-/* Firebase 설정 */
-
-const firebaseConfig = {
-
-apiKey: "YOUR_API_KEY",
-
-authDomain: "YOUR_AUTH_DOMAIN",
-
-projectId: "YOUR_PROJECT_ID",
-
-storageBucket: "YOUR_STORAGE_BUCKET",
-
-messagingSenderId: "YOUR_SENDER_ID",
-
-appId: "YOUR_APP_ID"
-};
-
-const app = initializeApp(firebaseConfig);
-
-const analytics = getAnalytics(app);
-
-const db = getFirestore(app);
-
-const auth = getAuth(app);
-
-const storage = getStorage(app);
-
-const postsDiv =
-document.getElementById("posts");
-
-let currentUser = null;
-
-/* 로그인 상태 */
-
-onAuthStateChanged(auth, async (user)=>{
-
-currentUser = user;
-
-const profileName =
-document.getElementById(
-"profileName"
-);
-
-const profileEmail =
-document.getElementById(
-"profileEmail"
-);
-
-const profileStatus =
-document.getElementById(
-"profileStatus"
-);
-
-const profileImage =
-document.getElementById(
-"profileImage"
-);
-
-if(user){
-
-    profileName.innerText =
-    localStorage.getItem(
-        "nickname"
-    ) || "사용자";
-
-    profileEmail.innerText =
-    user.email;
-
-    profileStatus.innerText =
-    localStorage.getItem(
-        "status"
-    ) || "상태메세지 없음";
-
-    const savedImage =
-    localStorage.getItem(
-        "profileImage"
-    );
-
-    if(savedImage){
-
-        profileImage.src =
-        savedImage;
-    }
-
-}else{
-
-    profileName.innerText =
-    "로그인 안됨";
-
-    profileEmail.innerText =
-    "";
-
-    profileStatus.innerText =
-    "";
-
-    profileImage.src =
-    "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-}
-});
-
-/* 회원가입 */
-
-window.signup = async function(){
-
-const email =
-document.getElementById("email").value;
-
-const password =
-document.getElementById("password").value;
-
-const nickname =
-document.getElementById("nicknameInput").value;
-
-if(!email || !password || !nickname){
-
-alert("전부 입력해주세요");
-return;
-}
-
-await createUserWithEmailAndPassword(
-auth,
-email,
-password
-);
-
-localStorage.setItem(
-"nickname",
-nickname
-);
-
-alert("회원가입 성공");
-};
-
-/* 로그인 */
-
-window.login = async function(){
-
-const email =
-document.getElementById("email").value;
-
-const password =
-document.getElementById("password").value;
-
-await signInWithEmailAndPassword(
-auth,
-email,
-password
-);
-
-alert("로그인 성공");
-};
-
-/* 로그아웃 */
-
-window.logout = async function(){
-
-await signOut(auth);
-
-alert("로그아웃 완료");
-};
-
-/* 프로필 저장 */
-
-window.saveProfile = async function(){
-
-if(!currentUser){
-
-alert("로그인 필요");
-return;
-}
-
-const status =
-document.getElementById(
-"statusInput"
-).value;
-
-localStorage.setItem(
-"status",
-status
-);
-
-const file =
-document.getElementById(
-"profileUpload"
-).files[0];
-
-if(file){
-
-const storageRef = ref(
-
-storage,
-
-`profiles/${currentUser.uid}`
-);
-
-await uploadBytes(
-storageRef,
-file
-);
-
-const url =
-await getDownloadURL(
-storageRef
-);
-
-localStorage.setItem(
-"profileImage",
-url
-);
-
-document.getElementById(
-"profileImage"
-).src = url;
-}
-
-document.getElementById(
-"profileStatus"
-).innerText = status;
-
-alert("프로필 저장 완료");
-};
-
-/* 게시글 작성 */
-
-window.uploadPost = async function(){
-
-if(!currentUser){
-
-alert("로그인 필요");
-return;
-}
-
-const content =
-document.getElementById("content")
-.value
-.trim();
-
-if(!content){
-
-alert("내용 입력");
-return;
-}
-
-await addDoc(
-
-collection(db, "posts"),
-
-{
-
-nickname:
-localStorage.getItem("nickname"),
-
-uid:
-currentUser.uid,
-
-email:
-currentUser.email,
-
-profileImage:
-localStorage.getItem(
-"profileImage"
-),
-
-status:
-localStorage.getItem(
-"status"
-),
-
-content,
-
-createdAt:
-serverTimestamp()
-}
-);
-
-document.getElementById(
-"content"
-).value = "";
-};
-
-/* 나머지 댓글/답글/수정삭제 코드는 이전 버전 그대로 이어서 사용 */
-
-function escapeHTML(str){
-
-return str
-.replace(/&/g, "&amp;")
-.replace(/</g, "&lt;")
-.replace(/>/g, "&gt;")
-.replace(/"/g, "&quot;")
-.replace(/'/g, "&#039;");
-}
-
-window.toggleSidebar = function(){
-
-document
-.getElementById("sidebar")
-.classList.toggle("active");
-
-document
-.getElementById("overlay")
-.classList.toggle("active");
-};
-
-</script>
+<script type="module" src="firebase.js"></script>
+<script type="module" src="app.js"></script>
 
 </body>
 </html>
