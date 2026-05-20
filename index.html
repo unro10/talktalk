@@ -32,7 +32,7 @@ body{
 
 .title{
     text-align:center;
-    margin-bottom:25px;
+    margin-bottom:24px;
 }
 
 .title h1{
@@ -40,8 +40,8 @@ body{
 }
 
 .title p{
-    color:#666;
     margin-top:6px;
+    color:#666;
     font-size:14px;
 }
 
@@ -81,29 +81,29 @@ button{
 }
 
 button:hover{
-    opacity:0.9;
+    opacity:0.92;
+}
+
+.content{
+    line-height:1.6;
+    word-break:break-word;
+}
+
+.nickname{
+    font-weight:700;
+}
+
+.date{
+    color:#888;
+    font-size:12px;
+    margin-top:3px;
 }
 
 .post-header{
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
-    margin-bottom:10px;
-}
-
-.nickname{
-    font-weight:700;
-    margin-bottom:4px;
-}
-
-.date{
-    font-size:12px;
-    color:#888;
-}
-
-.content{
-    line-height:1.6;
-    word-break:break-word;
+    margin-bottom:12px;
 }
 
 .actions{
@@ -117,15 +117,11 @@ button:hover{
     font-size:13px;
 }
 
-.comment-box{
-    margin-top:16px;
-}
-
 .comment{
+    margin-top:14px;
     background:#f7f7f7;
-    border-radius:12px;
     padding:12px;
-    margin-top:12px;
+    border-radius:12px;
 }
 
 .comment-header{
@@ -135,33 +131,30 @@ button:hover{
     margin-bottom:8px;
 }
 
-.small{
-    font-size:13px;
-}
-
 .menu-wrap{
     position:relative;
 }
 
 .menu-btn-small{
     background:none;
-    color:#666;
     border:none;
-    width:auto;
+    color:#666;
     font-size:20px;
+    width:auto;
     padding:0 8px;
 }
 
 .comment-menu{
     position:absolute;
-    top:30px;
     right:0;
+    top:30px;
     background:white;
     border-radius:12px;
     overflow:hidden;
     display:none;
     min-width:100px;
     box-shadow:0 4px 12px rgba(0,0,0,0.12);
+    z-index:100;
 }
 
 .comment-menu.active{
@@ -169,12 +162,12 @@ button:hover{
 }
 
 .comment-menu button{
-    width:100%;
     background:white;
     color:black;
     border:none;
     border-radius:0;
     text-align:left;
+    width:100%;
     padding:10px 14px;
 }
 
@@ -193,13 +186,19 @@ button:hover{
     margin-left:18px;
     margin-top:10px;
     background:#ececec;
-    border-radius:10px;
     padding:10px;
+    border-radius:10px;
 }
 
 .replies{
     margin-top:10px;
 }
+
+.small{
+    font-size:13px;
+}
+
+/* 사이드바 */
 
 .menu-btn{
     position:fixed;
@@ -213,8 +212,8 @@ button:hover{
     align-items:center;
     justify-content:center;
     font-size:24px;
-    z-index:1001;
     cursor:pointer;
+    z-index:1001;
     box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
@@ -252,11 +251,60 @@ button:hover{
     pointer-events:auto;
 }
 
-.user-info{
-    text-align:center;
-    margin-bottom:15px;
-    color:#555;
-    font-size:14px;
+/* 프로필 */
+
+.profile-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.profile-avatar-wrap{
+    position:relative;
+    width:64px;
+    height:64px;
+    flex-shrink:0;
+}
+
+.profile-avatar-img{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#ddd;
+}
+
+.online-dot{
+    position:absolute;
+    right:2px;
+    bottom:2px;
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background:#2cd84a;
+    border:3px solid white;
+}
+
+.profile-info{
+    display:flex;
+    flex-direction:column;
+}
+
+.profile-name{
+    font-size:18px;
+    font-weight:700;
+}
+
+.profile-email{
+    margin-top:4px;
+    font-size:13px;
+    color:#777;
+}
+
+.profile-status{
+    margin-top:6px;
+    font-size:13px;
+    color:#666;
 }
 
 @media(max-width:480px){
@@ -265,13 +313,13 @@ button:hover{
         padding:14px;
     }
 
-    .title h1{
-        font-size:24px;
-    }
-
     .card{
         border-radius:16px;
         padding:15px;
+    }
+
+    .title h1{
+        font-size:24px;
     }
 }
 
@@ -339,12 +387,75 @@ onclick="toggleSidebar()"
         <p>실시간 온라인 커뮤니티</p>
     </div>
 
+    <!-- 프로필 -->
+
     <div
-        class="user-info"
-        id="userInfo"
+        class="profile-card card"
+        id="profileCard"
     >
-        로그인 안됨
+
+        <div class="profile-avatar-wrap">
+
+            <img
+                id="profileImage"
+                class="profile-avatar-img"
+                src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            >
+
+            <div class="online-dot"></div>
+
+        </div>
+
+        <div class="profile-info">
+
+            <div
+                class="profile-name"
+                id="profileName"
+            >
+                로그인 안됨
+            </div>
+
+            <div
+                class="profile-email"
+                id="profileEmail"
+            ></div>
+
+            <div
+                class="profile-status"
+                id="profileStatus"
+            >
+                상태메세지 없음
+            </div>
+
+        </div>
+
     </div>
+
+    <!-- 프로필 설정 -->
+
+    <div class="card">
+
+        <input
+            type="text"
+            id="statusInput"
+            class="input"
+            placeholder="상태메세지 입력"
+        >
+
+        <input
+            type="file"
+            id="profileUpload"
+            accept="image/*"
+            class="input"
+        >
+
+        <button onclick="saveProfile()">
+            프로필 저장
+        </button>
+
+    </div>
+
+    <!-- 글 작성 -->
 
     <div class="card">
 
@@ -360,11 +471,15 @@ onclick="toggleSidebar()"
 
     </div>
 
+    <!-- 게시글 -->
+
     <div id="posts"></div>
 
 </div>
 
 <script type="module">
+
+/* Firebase */
 
 import {
 initializeApp
@@ -403,33 +518,37 @@ signOut
 }
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
+import {
+
+getStorage,
+ref,
+uploadBytes,
+getDownloadURL
+
+}
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
+
 /* Firebase 설정 */
 
 const firebaseConfig = {
 
 apiKey:
-"AIzaSyCwvEU45zXUnJTcISF2CHBb1H5kPvA1UnY",
+"YOUR_API_KEY",
 
 authDomain:
-"talktalk-c3cbe.firebaseapp.com",
-
-databaseURL:
-"https://talktalk-c3cbe-default-rtdb.firebaseio.com",
+"YOUR_AUTH_DOMAIN",
 
 projectId:
-"talktalk-c3cbe",
+"YOUR_PROJECT_ID",
 
 storageBucket:
-"talktalk-c3cbe.firebasestorage.app",
+"YOUR_STORAGE_BUCKET",
 
 messagingSenderId:
-"476607267300",
+"YOUR_SENDER_ID",
 
 appId:
-"1:476607267300:web:1d0ea398b686227c3e87f1",
-
-measurementId:
-"G-HYD9W5XNX0"
+"YOUR_APP_ID"
 };
 
 const app =
@@ -444,6 +563,9 @@ getFirestore(app);
 const auth =
 getAuth(app);
 
+const storage =
+getStorage(app);
+
 const postsDiv =
 document.getElementById("posts");
 
@@ -451,22 +573,69 @@ let currentUser = null;
 
 /* 로그인 상태 */
 
-onAuthStateChanged(auth, (user)=>{
+onAuthStateChanged(auth, async (user)=>{
 
 currentUser = user;
 
-const userInfo =
-document.getElementById("userInfo");
+const profileName =
+document.getElementById(
+"profileName"
+);
+
+const profileEmail =
+document.getElementById(
+"profileEmail"
+);
+
+const profileStatus =
+document.getElementById(
+"profileStatus"
+);
+
+const profileImage =
+document.getElementById(
+"profileImage"
+);
 
 if(user){
 
-userInfo.innerText =
-`${localStorage.getItem("nickname")} 님 로그인`;
+    profileName.innerText =
+    localStorage.getItem(
+        "nickname"
+    ) || "사용자";
+
+    profileEmail.innerText =
+    user.email;
+
+    profileStatus.innerText =
+    localStorage.getItem(
+        "status"
+    ) || "상태메세지 없음";
+
+    const savedImage =
+    localStorage.getItem(
+        "profileImage"
+    );
+
+    if(savedImage){
+
+        profileImage.src =
+        savedImage;
+    }
 
 }else{
 
-userInfo.innerText =
-"로그인 안됨";
+    profileName.innerText =
+    "로그인 안됨";
+
+    profileEmail.innerText =
+    "";
+
+    profileStatus.innerText =
+    "";
+
+    profileImage.src =
+    "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 }
 });
 
@@ -531,7 +700,68 @@ await signOut(auth);
 alert("로그아웃 완료");
 };
 
-/* 글 작성 */
+/* 프로필 저장 */
+
+window.saveProfile = async function(){
+
+if(!currentUser){
+
+alert("로그인 필요");
+return;
+}
+
+const status =
+document.getElementById(
+"statusInput"
+).value;
+
+localStorage.setItem(
+"status",
+status
+);
+
+const file =
+document.getElementById(
+"profileUpload"
+).files[0];
+
+if(file){
+
+const storageRef = ref(
+
+storage,
+
+`profiles/${currentUser.uid}`
+);
+
+await uploadBytes(
+storageRef,
+file
+);
+
+const url =
+await getDownloadURL(
+storageRef
+);
+
+localStorage.setItem(
+"profileImage",
+url
+);
+
+document.getElementById(
+"profileImage"
+).src = url;
+}
+
+document.getElementById(
+"profileStatus"
+).innerText = status;
+
+alert("프로필 저장 완료");
+};
+
+/* 게시글 작성 */
 
 window.uploadPost = async function(){
 
@@ -579,7 +809,7 @@ document.getElementById(
 ).value = "";
 };
 
-/* 게시글 */
+/* 게시글 불러오기 */
 
 const q = query(
 
@@ -610,11 +840,6 @@ currentUser.email === data.email
 
 );
 
-const post =
-document.createElement("div");
-
-post.className = "card";
-
 let dateText = "";
 
 if(data.createdAt){
@@ -629,6 +854,11 @@ dateText =
 `${String(date.getHours()).padStart(2,"0")}:` +
 `${String(date.getMinutes()).padStart(2,"0")}`;
 }
+
+const post =
+document.createElement("div");
+
+post.className = "card";
 
 post.innerHTML = `
 
@@ -697,9 +927,7 @@ addComment('${postDoc.id}')
 
 </div>
 
-<div
-id="comments-${postDoc.id}"
-></div>
+<div id="comments-${postDoc.id}"></div>
 `;
 
 postsDiv.appendChild(post);
@@ -806,7 +1034,7 @@ serverTimestamp()
 input.value = "";
 };
 
-/* 댓글 */
+/* 댓글 불러오기 */
 
 function loadComments(postId){
 
@@ -857,19 +1085,16 @@ const date =
 data.createdAt.toDate();
 
 commentDate =
-`${String(
-date.getHours()
-).padStart(2,"0")}:` +
-`${String(
-date.getMinutes()
-).padStart(2,"0")}`;
+`${String(date.getHours())
+.padStart(2,"0")}:` +
+`${String(date.getMinutes())
+.padStart(2,"0")}`;
 }
 
 const div =
 document.createElement("div");
 
-div.className =
-"comment";
+div.className = "comment";
 
 div.innerHTML = `
 
@@ -913,9 +1138,7 @@ id="menu-${commentDoc.id}"
 editComment(
 '${postId}',
 '${commentDoc.id}',
-\`${escapeHTML(
-data.content
-)}\`
+\`${escapeHTML(data.content)}\`
 )
 ">
 수정
@@ -992,7 +1215,7 @@ commentDoc.id
 });
 }
 
-/* 답글 */
+/* 답글 작성 */
 
 window.addReply = async function(
 
@@ -1049,6 +1272,8 @@ serverTimestamp()
 input.value = "";
 };
 
+/* 답글 불러오기 */
+
 function loadReplies(
 
 postId,
@@ -1090,8 +1315,7 @@ replyDoc.data();
 const div =
 document.createElement("div");
 
-div.className =
-"reply";
+div.className = "reply";
 
 div.innerHTML = `
 
@@ -1172,9 +1396,7 @@ commentId
 ){
 
 const ok =
-confirm(
-"댓글 삭제?"
-);
+confirm("댓글 삭제?");
 
 if(!ok) return;
 
