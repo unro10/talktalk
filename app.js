@@ -1,12 +1,13 @@
-import { auth, db } from './firebase.js';
-
-import {
+// Firebase v9 모듈
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
+  getFirestore,
   collection,
   addDoc,
   onSnapshot,
@@ -15,122 +16,104 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// 🔥 Firebase 설정 (네가 준 값)
+const firebaseConfig = {
+  apiKey: "AIzaSyCwvEU45zXUnJTcISF2CHBb1H5kPvA1UnY",
+  authDomain: "talktalk-c3cbe.firebaseapp.com",
+  databaseURL: "https://talktalk-c3cbe-default-rtdb.firebaseio.com",
+  projectId: "talktalk-c3cbe",
+  storageBucket: "talktalk-c3cbe.firebasestorage.app",
+  messagingSenderId: "476607267300",
+  appId: "1:476607267300:web:1d0ea398b686227c3e87f1",
+  measurementId: "G-HYD9W5XNX0"
+};
+
+// init
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 // 페이지 이동
-window.showPage = function(pageId) {
-  document.querySelectorAll('.page').forEach(page => {
-    page.classList.remove('active');
-  });
-
-  document.getElementById(pageId).classList.add('active');
-}
-
-// 회원가입
-window.signup = async function() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    alert('회원가입 성공');
-  } catch(error) {
-    alert(error.message);
-  }
-}
-
-// 로그인
-window.login = async function() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    alert('로그인 성공');
-  } catch(error) {
-    alert(error.message);
-  }
-}
+window.showPage = (id) => {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+};
 
 // 로그인 상태
-onAuthStateChanged(auth, user => {
-  const userInfo = document.getElementById('userInfo');
+let currentUser = null;
 
-  if(user) {
-    userInfo.innerText = `로그인됨 : ${user.email}`;
-  } else {
-    userInfo.innerText = '로그인 안됨';
-  }
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  document.getElementById("userInfo").innerText =
+    user ? `로그인됨: ${user.email}` : "로그인 안됨";
 });
+
+// 회원가입
+window.signup = async () => {
+  const email = email.value;
+  const password = password.value;
+
+  await createUserWithEmailAndPassword(auth, email, password);
+};
+
+// 로그인
+window.login = async () => {
+  const email = email.value;
+  const password = password.value;
+
+  await signInWithEmailAndPassword(auth, email, password);
+};
 
 // 게시글 작성
-window.addPost = async function() {
-  const text = document.getElementById('postInput').value;
+window.addPost = async () => {
+  const text = postInput.value;
 
-  if(text.trim() === '') return;
-
-  await addDoc(collection(db, 'posts'), {
+  await addDoc(collection(db, "posts"), {
     text,
+    user: currentUser?.email || "익명",
     createdAt: serverTimestamp()
   });
 
-  document.getElementById('postInput').value = '';
-}
+  postInput.value = "";
+};
 
-// 게시글 불러오기
-const postQuery = query(
-  collection(db, 'posts'),
-  orderBy('createdAt', 'desc')
-);
-
-onSnapshot(postQuery, snapshot => {
-  const postList = document.getElementById('postList');
-
-  postList.innerHTML = '';
-
-  snapshot.forEach(doc => {
-    const post = doc.data();
-
-    const div = document.createElement('div');
-    div.className = 'post';
-    div.innerText = post.text;
-
-    postList.appendChild(div);
+// 게시글 읽기
+onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "desc")), (snap) => {
+  postList.innerHTML = "";
+  snap.forEach(doc => {
+    const d = doc.data();
+    postList.innerHTML += `
+      <div class="post">
+        <b>${d.user}</b>
+        <p>${d.text}</p>
+      </div>
+    `;
   });
 });
 
-// 메시지 전송
-window.sendMessage = async function() {
-  const input = document.getElementById('chatInput');
+// 채팅 보내기
+window.sendMessage = async () => {
+  const text = chatInput.value;
 
-  if(input.value.trim() === '') return;
-
-  await addDoc(collection(db, 'messages'), {
-    text: input.value,
+  await addDoc(collection(db, "messages"), {
+    text,
+    user: currentUser?.email || "익명",
     createdAt: serverTimestamp()
   });
 
-  input.value = '';
-}
+  chatInput.value = "";
+};
 
-// 실시간 채팅 불러오기
-const messageQuery = query(
-  collection(db, 'messages'),
-  orderBy('createdAt')
-);
-
-onSnapshot(messageQuery, snapshot => {
-  const chatBox = document.getElementById('chatBox');
-
-  chatBox.innerHTML = '';
-
-  snapshot.forEach(doc => {
-    const message = doc.data();
-
-    const div = document.createElement('div');
-    div.className = 'message';
-    div.innerText = message.text;
-
-    chatBox.appendChild(div);
+// 채팅 읽기
+onSnapshot(query(collection(db, "messages"), orderBy("createdAt")), (snap) => {
+  chatBox.innerHTML = "";
+  snap.forEach(doc => {
+    const d = doc.data();
+    chatBox.innerHTML += `
+      <div class="message">
+        <b>${d.user}</b>
+        <p>${d.text}</p>
+      </div>
+    `;
   });
-
-  chatBox.scrollTop = chatBox.scrollHeight;
 });
