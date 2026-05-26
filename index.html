@@ -1,60 +1,62 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TalkTalk</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalkTalk</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+<header>
+  <h1>TalkTalk</h1>
 
-  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+  <nav>
+    <button onclick="showPage('loginPage')">로그인</button>
+    <button onclick="showPage('postPage')">게시글</button>
+    <button onclick="showPage('chatPage')">채팅</button>
+  </nav>
+</header>
 
-  <div class="sidebar" id="sidebar">
-    <h2>계정</h2>
+<main>
 
-    <div class="profile-card">
-      <div class="profile-info">
-        <div class="profile-name" id="profileName">로그인 안됨</div>
-        <div class="profile-email" id="profileEmail"></div>
-      </div>
-    </div>
+  <!-- 로그인 -->
+  <section id="loginPage" class="page active">
+    <h2>로그인</h2>
 
-    <input type="email" id="email" class="input" placeholder="이메일">
-    <input type="password" id="password" class="input" placeholder="비밀번호">
-    <input type="text" id="nicknameInput" class="input" placeholder="닉네임">
-    
-    <button id="signupBtn">회원가입</button>
-    <button id="loginBtn">로그인</button>
-    <button id="logoutBtn">로그아웃</button>
+    <input type="email" id="email" placeholder="이메일">
+    <input type="password" id="password" placeholder="비밀번호">
 
-    <hr>
+    <button onclick="signup()">회원가입</button>
+    <button onclick="login()">로그인</button>
 
-    <h3>친구 추가</h3>
-    <input type="email" id="friendEmail" class="input" placeholder="친구 이메일">
-    <button id="addFriendBtn">친구 추가</button>
-    <div id="friendList"></div>
-  </div>
+    <p id="userInfo"></p>
+  </section>
 
-  <div class="container">
-    <div class="title">
-      <h1>TalkTalk</h1>
-      <p>실시간 온라인 커뮤니티</p>
-    </div>
+  <!-- 게시글 -->
+  <section id="postPage" class="page">
+    <h2>게시글</h2>
 
-    <div class="card">
-      <textarea id="content" class="input" placeholder="내용 입력"></textarea>
-      <button id="uploadBtn">게시하기</button>
-    </div>
+    <textarea id="postInput" placeholder="게시글 작성"></textarea>
+    <button onclick="addPost()">게시글 작성</button>
 
-    <div id="posts"></div>
-  </div>
+    <div id="postList"></div>
+  </section>
 
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="app.js"></script>
+  <!-- 채팅 -->
+  <section id="chatPage" class="page">
+    <h2>실시간 채팅</h2>
+
+    <div id="chatBox"></div>
+
+    <input type="text" id="chatInput" placeholder="메시지 입력">
+    <button onclick="sendMessage()">전송</button>
+  </section>
+
+</main>
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="app.js"></script>
+
 </body>
 </html>
