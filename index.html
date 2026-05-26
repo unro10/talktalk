@@ -34,107 +34,126 @@ onclick="toggleSidebar()"
 
 <div class="sidebar" id="sidebar">
 
-    <h2>계정</h2>
+<h2>계정</h2>
 
-    <!-- 프로필 -->
+<!-- 프로필 -->
 
-    <div class="profile-card">
+<div class="profile-card">
 
-        <div class="profile-avatar-wrap">
+<div class="profile-avatar-wrap">
 
-            <img
-                id="profileImage"
-                class="profile-avatar-img"
-                src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            >
+<img
+id="profileImage"
+class="profile-avatar-img"
+src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+>
 
-            <div class="online-dot"></div>
+<div class="online-dot"></div>
 
-        </div>
+</div>
 
-        <div class="profile-info">
+<div class="profile-info">
 
-            <div
-                class="profile-name"
-                id="profileName"
-            >
-                로그인 안됨
-            </div>
+<div
+class="profile-name"
+id="profileName"
+>
+로그인 안됨
+</div>
 
-            <div
-                class="profile-email"
-                id="profileEmail"
-            ></div>
+<div
+class="profile-email"
+id="profileEmail"
+></div>
 
-            <div
-                class="profile-status"
-                id="profileStatus"
-            >
-                상태메세지 없음
-            </div>
+<div
+class="profile-status"
+id="profileStatus"
+>
+상태메세지 없음
+</div>
 
-        </div>
+</div>
 
-    </div>
+</div>
 
-    <!-- 회원가입 / 로그인 -->
+<!-- 회원가입 / 로그인 -->
 
-    <input
-        type="email"
-        id="email"
-        class="input"
-        placeholder="이메일"
-    >
+<input
+type="email"
+id="email"
+class="input"
+placeholder="이메일"
+>
 
-    <input
-        type="password"
-        id="password"
-        class="input"
-        placeholder="비밀번호"
-    >
+<input
+type="password"
+id="password"
+class="input"
+placeholder="비밀번호"
+>
 
-    <input
-        type="text"
-        id="nicknameInput"
-        class="input"
-        placeholder="닉네임"
-    >
+<input
+type="text"
+id="nicknameInput"
+class="input"
+placeholder="닉네임"
+>
 
-    <button id="signupBtn">
-        회원가입
-    </button>
+<button id="signupBtn">
+회원가입
+</button>
 
-    <button id="loginBtn">
-        로그인
-    </button>
+<button id="loginBtn">
+로그인
+</button>
 
-    <button id="logoutBtn">
-        로그아웃
-    </button>
+<button id="logoutBtn">
+로그아웃
+</button>
 
-    <hr>
+<hr>
 
-    <!-- 프로필 설정 -->
+<!-- 친구 추가 -->
 
-    <h3>프로필 설정</h3>
+<h3>친구 추가</h3>
 
-    <input
-        type="text"
-        id="statusInput"
-        class="input"
-        placeholder="상태메세지"
-    >
+<input
+type="email"
+id="friendEmail"
+class="input"
+placeholder="친구 이메일"
+>
 
-    <input
-        type="file"
-        id="profileUpload"
-        class="input"
-        accept="image/*"
-    >
+<button id="addFriendBtn">
+친구 추가
+</button>
 
-    <button id="saveProfileBtn">
-        프로필 저장
-    </button>
+<div id="friendList"></div>
+
+<hr>
+
+<!-- 프로필 설정 -->
+
+<h3>프로필 설정</h3>
+
+<input
+type="text"
+id="statusInput"
+class="input"
+placeholder="상태메세지"
+>
+
+<input
+type="file"
+id="profileUpload"
+class="input"
+accept="image/*"
+>
+
+<button id="saveProfileBtn">
+프로필 저장
+</button>
 
 </div>
 
@@ -142,35 +161,35 @@ onclick="toggleSidebar()"
 
 <div class="container">
 
-    <div class="title">
+<div class="title">
 
-        <h1>TalkTalk</h1>
+<h1>TalkTalk</h1>
 
-        <p>
-            실시간 온라인 커뮤니티
-        </p>
+<p>
+실시간 온라인 커뮤니티
+</p>
 
-    </div>
+</div>
 
-    <!-- 게시글 작성 -->
+<!-- 게시글 작성 -->
 
-    <div class="card">
+<div class="card">
 
-        <textarea
-            id="content"
-            class="input"
-            placeholder="내용 입력"
-        ></textarea>
+<textarea
+id="content"
+class="input"
+placeholder="내용 입력"
+></textarea>
 
-        <button id="uploadBtn">
-            게시하기
-        </button>
+<button id="uploadBtn">
+게시하기
+</button>
 
-    </div>
+</div>
 
-    <!-- 게시글 -->
+<!-- 게시글 -->
 
-    <div id="posts"></div>
+<div id="posts"></div>
 
 </div>
 
