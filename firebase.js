@@ -1,54 +1,42 @@
 import {
-
 initializeApp
-
 }
-
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
 import {
-
 getAuth
-
 }
-
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 import {
-
 getFirestore
-
 }
-
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 import {
-
 getStorage
-
 }
-
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
 
 const firebaseConfig = {
 
-  apiKey:
-  "AIzaSyCwvEU45zXUnJTcISF2CHBb1H5kPvA1UnY",
+apiKey:
+"YOUR_API_KEY",
 
-  authDomain:
-  "talktalk-c3cbe.firebaseapp.com",
+authDomain:
+"YOUR_AUTH_DOMAIN",
 
-  projectId:
-  "talktalk-c3cbe",
+projectId:
+"YOUR_PROJECT_ID",
 
-  storageBucket:
-  "talktalk-c3cbe.firebasestorage.app",
+storageBucket:
+"YOUR_STORAGE_BUCKET",
 
-  messagingSenderId:
-  "476607267300",
+messagingSenderId:
+"YOUR_MESSAGING_SENDER_ID",
 
-  appId:
-  "1:476607267300:web:1d0ea398b686227c3e87f1"
+appId:
+"YOUR_APP_ID"
 };
 
 const app =
