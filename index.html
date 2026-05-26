@@ -1,200 +1,72 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>TalkTalk</title>
-
-<link rel="stylesheet" href="style.css">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-
-<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalkTalk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- 메뉴 버튼 -->
+  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
 
-<div class="menu-btn" onclick="toggleSidebar()">
-☰
-</div>
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-<!-- 오버레이 -->
+  <div class="sidebar" id="sidebar">
+    <h2>계정</h2>
 
-<div
-class="overlay"
-id="overlay"
-onclick="toggleSidebar()"
-></div>
+    <div class="profile-card">
+      <div class="profile-avatar-wrap">
+        <img id="profileImage" class="profile-avatar-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="프로필">
+        <div class="online-dot"></div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name" id="profileName">로그인 안됨</div>
+        <div class="profile-email" id="profileEmail"></div>
+        <div class="profile-status" id="profileStatus">상태메세지 없음</div>
+      </div>
+    </div>
 
-<!-- 사이드바 -->
+    <input type="email" id="email" class="input" placeholder="이메일">
+    <input type="password" id="password" class="input" placeholder="비밀번호">
+    <input type="text" id="nicknameInput" class="input" placeholder="닉네임">
+    
+    <button id="signupBtn">회원가입</button>
+    <button id="loginBtn">로그인</button>
+    <button id="logoutBtn">로그아웃</button>
 
-<div class="sidebar" id="sidebar">
+    <hr>
 
-<h2>계정</h2>
+    <h3>친구 추가</h3>
+    <input type="email" id="friendEmail" class="input" placeholder="친구 이메일">
+    <button id="addFriendBtn">친구 추가</button>
+    <div id="friendList"></div>
 
-<!-- 프로필 -->
+    <hr>
 
-<div class="profile-card">
+    <h3>프로필 설정</h3>
+    <input type="text" id="statusInput" class="input" placeholder="변경할 상태메세지">
+    <input type="file" id="profileUpload" class="input" accept="image/*">
+    <button id="saveProfileBtn">프로필 저장</button>
+  </div>
 
-<div class="profile-avatar-wrap">
+  <div class="container">
+    <div class="title">
+      <h1>TalkTalk</h1>
+      <p>실시간 온라인 커뮤니티</p>
+    </div>
 
-<img
-id="profileImage"
-class="profile-avatar-img"
-src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
->
+    <div class="card">
+      <textarea id="content" class="input" placeholder="내용 입력"></textarea>
+      <button id="uploadBtn">게시하기</button>
+    </div>
 
-<div class="online-dot"></div>
+    <div id="posts"></div>
+  </div>
 
-</div>
-
-<div class="profile-info">
-
-<div
-class="profile-name"
-id="profileName"
->
-로그인 안됨
-</div>
-
-<div
-class="profile-email"
-id="profileEmail"
-></div>
-
-<div
-class="profile-status"
-id="profileStatus"
->
-상태메세지 없음
-</div>
-
-</div>
-
-</div>
-
-<!-- 회원가입 / 로그인 -->
-
-<input
-type="email"
-id="email"
-class="input"
-placeholder="이메일"
->
-
-<input
-type="password"
-id="password"
-class="input"
-placeholder="비밀번호"
->
-
-<input
-type="text"
-id="nicknameInput"
-class="input"
-placeholder="닉네임"
->
-
-<button id="signupBtn">
-회원가입
-</button>
-
-<button id="loginBtn">
-로그인
-</button>
-
-<button id="logoutBtn">
-로그아웃
-</button>
-
-<hr>
-
-<!-- 친구 추가 -->
-
-<h3>친구 추가</h3>
-
-<input
-type="email"
-id="friendEmail"
-class="input"
-placeholder="친구 이메일"
->
-
-<button id="addFriendBtn">
-친구 추가
-</button>
-
-<div id="friendList"></div>
-
-<hr>
-
-<!-- 프로필 설정 -->
-
-<h3>프로필 설정</h3>
-
-<input
-type="text"
-id="statusInput"
-class="input"
-placeholder="상태메세지"
->
-
-<input
-type="file"
-id="profileUpload"
-class="input"
-accept="image/*"
->
-
-<button id="saveProfileBtn">
-프로필 저장
-</button>
-
-</div>
-
-<!-- 메인 -->
-
-<div class="container">
-
-<div class="title">
-
-<h1>TalkTalk</h1>
-
-<p>
-실시간 온라인 커뮤니티
-</p>
-
-</div>
-
-<!-- 게시글 작성 -->
-
-<div class="card">
-
-<textarea
-id="content"
-class="input"
-placeholder="내용 입력"
-></textarea>
-
-<button id="uploadBtn">
-게시하기
-</button>
-
-</div>
-
-<!-- 게시글 -->
-
-<div id="posts"></div>
-
-</div>
-
-<script type="module" src="firebase.js"></script>
-<script type="module" src="app.js"></script>
-
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
