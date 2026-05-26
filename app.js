@@ -1,11 +1,8 @@
 import {
-
 auth,
 db,
 storage
-
 }
-
 from "./firebase.js";
 
 import {
@@ -16,7 +13,6 @@ onAuthStateChanged,
 signOut
 
 }
-
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
 import {
@@ -29,10 +25,11 @@ onSnapshot,
 serverTimestamp,
 doc,
 setDoc,
-getDoc
+getDoc,
+updateDoc,
+arrayUnion
 
 }
-
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 import {
@@ -42,7 +39,6 @@ uploadBytes,
 getDownloadURL
 
 }
-
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-storage.js";
 
 /* 변수 */
@@ -99,8 +95,6 @@ password
 const user =
 userCredential.user;
 
-/* Firestore 저장 */
-
 await setDoc(
 
 doc(db, "users", user.uid),
@@ -112,7 +106,10 @@ email,
 
 status:"상태메세지 없음",
 
-profileImage:""
+profileImage:"",
+
+friends:[]
+
 }
 );
 
@@ -170,24 +167,16 @@ onAuthStateChanged(auth, async (user)=>{
 currentUser = user;
 
 const profileName =
-document.getElementById(
-"profileName"
-);
+document.getElementById("profileName");
 
 const profileEmail =
-document.getElementById(
-"profileEmail"
-);
+document.getElementById("profileEmail");
 
 const profileStatus =
-document.getElementById(
-"profileStatus"
-);
+document.getElementById("profileStatus");
 
 const profileImage =
-document.getElementById(
-"profileImage"
-);
+document.getElementById("profileImage");
 
 if(user){
 
@@ -212,10 +201,10 @@ profileStatus.innerText =
 userData.status;
 
 profileImage.src =
-
 userData.profileImage ||
-
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+loadFriends(userData.friends);
 }
 
 }else{
@@ -227,7 +216,7 @@ profileEmail.innerText =
 "";
 
 profileStatus.innerText =
-"";
+"상태메세지 없음";
 
 profileImage.src =
 "https://cdn-icons-png.flaticon.com/512/149/149071.png";
@@ -249,14 +238,10 @@ return;
 }
 
 const status =
-document.getElementById(
-"statusInput"
-).value;
+document.getElementById("statusInput").value;
 
 const file =
-document.getElementById(
-"profileUpload"
-).files[0];
+document.getElementById("profileUpload").files[0];
 
 let imageUrl = "";
 
@@ -293,8 +278,6 @@ imageUrl =
 userSnap.data().profileImage || "";
 }
 
-/* 기존 닉네임 유지 */
-
 const userSnap =
 await getDoc(
 doc(
@@ -326,7 +309,10 @@ currentUser.email,
 status:
 status || "상태메세지 없음",
 
-profileImage:imageUrl
+profileImage:imageUrl,
+
+friends:
+oldData.friends || []
 
 }
 
@@ -339,6 +325,88 @@ alert("프로필 저장 완료");
 alert(err.message);
 }
 };
+
+/* 친구 추가 */
+
+document
+.getElementById("addFriendBtn")
+.onclick = async ()=>{
+
+try{
+
+if(!currentUser){
+
+alert("로그인 필요");
+return;
+}
+
+const friendEmail =
+document.getElementById("friendEmail").value;
+
+const usersQuery =
+query(collection(db, "users"));
+
+onSnapshot(usersQuery, async(snapshot)=>{
+
+snapshot.forEach(async(userDoc)=>{
+
+const data =
+userDoc.data();
+
+if(data.email === friendEmail){
+
+await updateDoc(
+
+doc(
+db,
+"users",
+currentUser.uid
+),
+
+{
+
+friends:
+arrayUnion(data.email)
+
+}
+);
+
+alert("친구 추가 완료");
+}
+});
+});
+
+}catch(err){
+
+alert(err.message);
+}
+};
+
+/* 친구 목록 */
+
+async function loadFriends(friends){
+
+const friendList =
+document.getElementById("friendList");
+
+friendList.innerHTML = "";
+
+if(!friends) return;
+
+friends.forEach((friend)=>{
+
+const div =
+document.createElement("div");
+
+div.className =
+"friend-item";
+
+div.innerText =
+friend;
+
+friendList.appendChild(div);
+});
+}
 
 /* 게시글 작성 */
 
@@ -355,17 +423,15 @@ return;
 }
 
 const content =
-document.getElementById(
-"content"
-).value.trim();
+document.getElementById("content")
+.value
+.trim();
 
 if(!content){
 
 alert("내용 입력");
 return;
 }
-
-/* 유저 정보 */
 
 const userSnap =
 await getDoc(
@@ -395,10 +461,9 @@ userData.nickname,
 profileImage:
 userData.profileImage,
 
-status:
-userData.status,
-
 content,
+
+likes:[],
 
 createdAt:
 serverTimestamp()
@@ -441,6 +506,9 @@ document.createElement("div");
 
 post.className = "post";
 
+const likes =
+data.likes || [];
+
 post.innerHTML = `
 
 <div class="post-header">
@@ -482,10 +550,66 @@ ${escapeHTML(
 data.content || ""
 )}
 </div>
+
+<button
+class="like-btn"
+data-id="${postDoc.id}"
+>
+❤️ ${likes.length}
+</button>
 `;
 
 postsDiv.appendChild(post);
 });
+});
+
+/* 좋아요 */
+
+document.addEventListener("click", async(e)=>{
+
+if(
+e.target.classList.contains("like-btn")
+){
+
+if(!currentUser){
+
+alert("로그인 필요");
+return;
+}
+
+const postId =
+e.target.dataset.id;
+
+const postRef =
+doc(db, "posts", postId);
+
+const postSnap =
+await getDoc(postRef);
+
+const postData =
+postSnap.data();
+
+let likes =
+postData.likes || [];
+
+if(
+likes.includes(currentUser.uid)
+){
+
+likes =
+likes.filter(
+uid => uid !== currentUser.uid
+);
+
+}else{
+
+likes.push(currentUser.uid);
+}
+
+await updateDoc(postRef,{
+likes
+});
+}
 });
 
 /* 날짜 */
@@ -497,7 +621,7 @@ if(!timestamp) return "";
 const date =
 timestamp.toDate();
 
-return date.toLocaleString();
+return date.toLocaleString("ko-KR");
 }
 
 /* XSS 방지 */
@@ -508,6 +632,6 @@ return str
 .replace(/&/g,"&amp;")
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
+.replace(/\"/g,"&quot;")
 .replace(/'/g,"&#039;");
 }
