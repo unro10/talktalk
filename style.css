@@ -1,193 +1,97 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
 }
 
-body{
-  background:#f5f5f5;
-  font-family:'Pretendard', sans-serif;
-  color:#111;
-  font-size:15px;
+body {
+  background: #0f172a;
+  color: white;
+  min-height: 100vh;
 }
 
-.container{
-  width:100%;
-  max-width:550px;
-  margin:auto;
-  padding:20px;
+header {
+  background: #1e293b;
+  padding: 20px;
+  text-align: center;
 }
 
-.title{
-  text-align:center;
-  margin-bottom:24px;
+header h1 {
+  margin-bottom: 10px;
 }
 
-.title h1{
-  font-size:30px;
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
-.title p{
-  margin-top:6px;
-  color:#666;
+button {
+  background: #3b82f6;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.card,
-.post{
-  background:white;
-  border-radius:20px;
-  padding:18px;
-  margin-bottom:18px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+button:hover {
+  background: #2563eb;
 }
 
-.input{
-  width:100%;
-  border:none;
-  outline:none;
-  background:#f1f1f1;
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:12px;
-  font-size:16px;
+main {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
 }
 
-textarea{
-  resize:none;
-  min-height:120px;
+.page {
+  display: none;
 }
 
-button{
-  border:none;
-  background:black;
-  color:white;
-  padding:12px;
-  border-radius:12px;
-  width:100%;
-  margin-bottom:10px;
-  cursor:pointer;
-  font-weight:600;
-  min-height:48px;
+.page.active {
+  display: block;
 }
 
-button:hover{
-  opacity:0.92;
+input,
+textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
 }
 
-/* ☰ 메뉴 버튼 및 사이드바 기본 */
-.menu-btn{
-  position:fixed;
-  top:18px;
-  left:18px;
-  width:46px;
-  height:46px;
-  background:white;
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-  cursor:pointer;
-  z-index:1001;
-  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+textarea {
+  min-height: 120px;
+  resize: vertical;
 }
 
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.35);
-  opacity:0;
-  pointer-events:none;
-  transition:0.3s;
+#postList {
+  margin-top: 20px;
 }
 
-.overlay.active{
-  opacity:1;
-  pointer-events:auto;
+.post {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 
-.sidebar{
-  position:fixed;
-  top:0;
-  left:-320px;
-  width:300px;
-  max-width:85%;
-  height:100vh;
-  background:white;
-  padding:24px;
-  overflow-y:auto;
-  transition:0.3s;
-  z-index:1002;
+#chatBox {
+  background: #1e293b;
+  height: 400px;
+  overflow-y: auto;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 
-.sidebar.active{
-  left:0;
-}
-
-/* 계정 프로필 정보 레이아웃 */
-.profile-card{
-  display:flex;
-  align-items:center;
-  margin-bottom:18px;
-}
-
-.profile-name{
-  font-size:18px;
-  font-weight:700;
-}
-
-.profile-email{
-  font-size:13px;
-  color:#666;
-  margin-top:4px;
-}
-
-/* 게시글 헤더 및 본문 */
-.post-header{
-  display:flex;
-  align-items:center;
-}
-
-.nickname{
-  font-weight:700;
-}
-
-.date{
-  font-size:12px;
-  color:#888;
-  margin-top:3px;
-}
-
-.content{
-  margin-top:14px;
-  line-height:1.6;
-  white-space:pre-wrap;
-  word-break:break-word;
-  overflow-wrap:break-word;
-}
-
-/* 좋아요 버튼 */
-.like-btn{
-  margin-top:14px;
-  background:#ff4d6d;
-}
-
-/* 친구 리스트 아이템 */
-.friend-item{
-  background:#eee;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:10px;
-  font-size:14px;
-}
-
-/* 반응형 미디어 쿼리 */
-@media(max-width:480px){
-  .container{
-    padding:14px;
-  }
-  .card,
-  .post{
-    border-radius:16px;
-  }
+.message {
+  background: #334155;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
